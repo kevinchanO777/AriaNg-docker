@@ -2,16 +2,22 @@
 mkdir -p /downloads
 echo "Starting aria2c..."
 aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all \
-    --rpc-listen-port=6800 \
-    --dir=/downloads \
-    --continue=true --max-connection-per-server=16 \
-    --min-split-size=1M --split=16 > /tmp/aria2.log 2>&1 &
+  --rpc-listen-port=6800 \
+  --dir=/downloads \
+  --continue=true --max-connection-per-server=16 \
+  --min-split-size=1M --split=16 \
+  --max-tries=20 \
+  --retry-wait=30 \
+  --retry-on-400=true \
+  --retry-on-403=true \
+  --retry-on-404=true \
+  --retry-on-unknown=true >/tmp/aria2.log 2>&1 &
 sleep 1
-if pgrep aria2c > /dev/null 2>&1; then
-    echo "aria2c started on port 6800"
+if pgrep aria2c >/dev/null 2>&1; then
+  echo "aria2c started on port 6800"
 else
-    echo "aria2c failed to start. Logs:"
-    cat /tmp/aria2.log
+  echo "aria2c failed to start. Logs:"
+  cat /tmp/aria2.log
 fi
 echo "Starting HTTP server on port 9222..."
 python3 -m http.server 9222 -d /app
