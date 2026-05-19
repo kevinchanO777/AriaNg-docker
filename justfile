@@ -13,3 +13,8 @@ default:
 [group('Docker')]
 build:
     docker build -t {{ FULL_IMAGE_NAME }} .
+
+[doc('Docker push')]
+[group('Docker')]
+push:
+    docker push {{ FULL_IMAGE_NAME }}
